@@ -3,7 +3,7 @@ High level concept
 - URL: Uniform Resource Locator. It is a way to locate a resource on the internet. The resource can be a web page, an image, a video, a PDF, and so on.
 - HTTP: Hypertext Transfer Protocol. When a user types a website (URL) into a browser (frontend), a request is sent to the backend of the website (a web server). The server processes the request and returns a response. This kind of data exchange is defined by HTTP. It specifies how clients and servers communicate.
 - HTML: Hypertext Markup Language. The backend of a website has two options for responding to clients. The first option is to generate the requested page in HTML format and send it back to the client. The other option is to return only the necessary data for the requested page and let the client build the page. This is considered the best practice.
-- API: Application Programming interface. If we push the responsibility of generating web pages to the client, the server becomes a gateway to the data. On the server, we can provide endpoints that client can talk to to get various pieces of data. Such kind of endpoints are called as APIs
+- API: Application Programming interface. If we push the responsibility of generating web pages to the client, the server becomes a gateway to the data. On the server, we can provide endpoints that client can talk to to get various pieces of data. Such kind of endpoints are called as APIs.
 
 - URL：统一资源定位符（Uniform Resource Locator），它是一种在互联网上定位资源的方式。该资源可以是一个网页、一张图片、一个视频、一个 PDF 文件等等。
 - HTTP：超文本传输协议（Hypertext Transfer Protocol）。当用户在浏览器（前端）中输入一个网站地址（URL）时，会向该网站的后端（Web 服务器）发送一个请求。服务器处理这个请求后返回响应。这种数据交换方式由 HTTP 定义，它规定了客户端和服务器之间如何进行通信。
@@ -49,7 +49,8 @@ Python 3.12.9
 ```
 % python manage.py startapp myapp
 ```
-- ```myproject/settings.py```
+Register app in settings:
+- `myproject/settings.py`
 
         INSTALLED_APPS = [
             'django.contrib.admin',
@@ -91,20 +92,20 @@ Python 3.12.9
 
 #### views.py samples in app
 ###### Function Based Views
-* ```myapp/views.py```: A function view takes a http request and returns a plain text response.
+* `myapp/views.py`: A function view takes a http request and returns a plain text response.
         
         from django.http import HttpResponse
         def hello(request):
             return HttpResponse('Hello, world! This is the hello page of myapp.')
 
 ###### Class Based Views
-* ```myapp/views.py```: A class view takes a http request and returns a plain text response.
+* `myapp/views.py`: A class view takes a http request and returns a plain text response.
 
         from django.views.generic import TemplateView
         class MyView(TemplateView):
             template_name = 'hello.html'
 
-* ```myapp/templates/hello.html```
+* `myapp/templates/hello.html`
 
         <!DOCTYPE html>
         <html>
@@ -118,8 +119,8 @@ Python 3.12.9
 
 
 #### urls.py patterns in app
-1. For each app, create a ```urls.py``` to map url to view
-2. Mapping url path to view function ```myapp/urls.py```:
+1. For each app, create a `urls.py` to map url to view
+2. Mapping url path to view function `myapp/urls.py`:
 
         from django.urls import path
         from . import views
@@ -129,12 +130,12 @@ Python 3.12.9
             path('', views.MyView.as_view(), name='myapp_myview'), # mapping to class view
         ]
 
-- ```'hello/', ''```: URL path 
-- ```views.hello, views.MyView.as_view()```: view function
-- ```name='xxx'```: alias for the path, it's used for reference in html
+- `'hello/', ''`: str: URL path 
+- `views.hello, views.MyView.as_view()`: view function which returns Http Response
+- `name='xxx'`: alias for the path, it's used for reference in html
 
 #### urls.py in main project
-```myproject/urls.py```:
+`myproject/urls.py`:
 
         from django.contrib import admin
         from django.urls import path, include
@@ -149,6 +150,114 @@ start server:
 
 ![image info](myapp.png)
 ![image info](myapp_class_based.png)
+
+### Tips for debugging Django in VSCode
+1. Install python extension
+
+    ![image info](debug_python_extension.png)
+
+2. Set interpreter
+
+    ![image info](debug_python_interpreter.png)
+    ![image info](debug_python_env.png)
+
+3. Create launch.json for debug
+
+    ![image info](debug_python_launch_01.png)
+    ![image info](debug_python_launch_02.png)
+    ![image info](debug_python_launch_03.png)
+    ![image info](debug_python_launch_04.png)
+
+- .vscode/launch.json
+
+        {
+            "version": "0.2.0",
+            "configurations": [
+                {
+                    "name": "Python Debugger: Django",
+                    "type": "debugpy",
+                    "request": "launch",
+                    "args": [
+                        "runserver",
+                        "8001"
+                    ],
+                    "django": true,
+                    "autoStartBrowser": false,
+                    "program": "${workspaceFolder}/myproject/manage.py"
+                }
+            ]
+        }
+4. RUN AND DEBUG
+
+    ![image info](debug_start.png)
+
+5. Setup Django Debug Toolbar
+
+    `ps: Toolbar only appear when return a proper html document`
+
+    - Install debug toolbar:
+        ```
+        pip install django-debug-toolbar
+        ```
+    - Register debug toolbar to the installed apps in `myproject/settings.py`:
+        ```
+        INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'myapp',  # Include your app here
+        'debug_toolbar',  # Include the debug toolbar
+        ]
+        ```
+
+    - Setting up URLconf in `myproject/urls.py`:
+        ```
+        import debug_toolbar
+        urlpatterns = [
+        ...
+        path('__debug__/', include(debug_toolbar.urls)),
+        ]
+        ```
+    - Enabling middleware in `myproject/settings.py`:
+        ```
+        MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',  # Include the debug toolbar middleware
+        ...
+        ]
+        ```
+
+    - Configure internal ips
+    
+        The debug toolbar is shown only if your IP address is listed in the `INTERNAL_IPS`
+
+        ```
+        INTERNAL_IPS = [
+        '127.0.0.1',
+        ]
+        ```
+
+    Start the server and the toolbar will appear on the right:
+    ![image info](debug_toolbar.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
