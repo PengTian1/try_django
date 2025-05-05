@@ -10,3 +10,7 @@ def hello(request):
 from django.views.generic import TemplateView
 class MyView(TemplateView):
     template_name = 'hello.html'
+
+from django.shortcuts import render
+def posts_list(request):
+    return render(request, 'myapp/posts_list.html')

@@ -25,4 +25,5 @@ urlpatterns = [
     path('', views.homepage),  # Include the URLs from myapp
     path('about/', views.about),  # Include the URLs from api
     path('__debug__/', include(debug_toolbar.urls)),
+    
 ]
