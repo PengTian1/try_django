@@ -69,15 +69,15 @@ Register app in settings:
         │   ├── db.sqlite3
         │   ├── manage.py
         │   ├── myapp
-        │   │   ├── __init__.py
-        │   │   ├── admin.py
-        │   │   ├── apps.py
-        │   │   ├── migrations
+        │   │   ├── __init__.py        # 让 Python 把该目录当作模块处理
+        │   │   ├── admin.py           # 注册模型以在 Django Admin 后台显示
+        │   │   ├── apps.py            # App 的配置类
+        │   │   ├── migrations         # 数据库迁移记录
         │   │   │   ├── __init__.py
-        │   │   ├── models.py
-        │   │   ├── tests.py
-        │   │   ├── urls.py
-        │   │   └── views.py
+        │   │   ├── models.py          # 定义数据库模型（数据结构）
+        │   │   ├── tests.py           # 编写单元测试和集成测试
+        │   │   ├── urls.py            # 定义该 App 的 URL 路由
+        │   │   └── views.py           # 处理请求并返回响应（视图逻辑）
         │   └── myproject
         │       ├── __init__.py
         │       ├── asgi.py
